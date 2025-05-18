@@ -1,4 +1,5 @@
--- Initial (Unoptimized) Query
+-- EXPLAIN the initial unoptimized query
+EXPLAIN
 SELECT
     bookings.id AS booking_id,
     users.name AS user_name,
@@ -9,7 +10,8 @@ JOIN users ON bookings.user_id = users.id
 JOIN properties ON bookings.property_id = properties.id
 JOIN payments ON bookings.payment_id = payments.id;
 
--- Optimized Query with WHERE and AND clause to filter and allow indexing
+-- EXPLAIN the optimized query
+EXPLAIN
 SELECT
     bookings.id AS booking_id,
     users.name AS user_name,
