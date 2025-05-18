@@ -1,34 +1,24 @@
--- perfomance.sql
--- Task 4: Optimize Complex Queries (filename matches requirement)
-
--- 1. Initial Query: Retrieve booking, user, property, and payment details
+-- Initial (Unoptimized) Query
 SELECT
-  b.booking_id,
-  b.start_date,
-  b.end_date,
-  u.user_id,
-  u.first_name,
-  p.property_id,
-  p.name AS property_name,
-  pm.payment_id,
-  pm.amount
-FROM bookings b
-JOIN users u ON b.user_id = u.user_id
-JOIN properties p ON b.property_id = p.property_id
-LEFT JOIN payments pm ON b.booking_id = pm.booking_id;
+    bookings.id AS booking_id,
+    users.name AS user_name,
+    properties.title AS property_title,
+    payments.amount AS payment_amount
+FROM bookings
+JOIN users ON bookings.user_id = users.id
+JOIN properties ON bookings.property_id = properties.id
+JOIN payments ON bookings.payment_id = payments.id;
 
--- 2. Optimized Query: Use INNER JOIN when payments exist
+-- Optimized Query with WHERE and AND clause to filter and allow indexing
 SELECT
-  b.booking_id,
-  b.start_date,
-  b.end_date,
-  u.user_id,
-  u.first_name,
-  p.property_id,
-  p.name AS property_name,
-  pm.payment_id,
-  pm.amount
-FROM bookings b
-JOIN users u ON b.user_id = u.user_id
-JOIN properties p ON b.property_id = p.property_id
-JOIN payments pm ON b.booking_id = pm.booking_id;
+    bookings.id AS booking_id,
+    users.name AS user_name,
+    properties.title AS property_title,
+    payments.amount AS payment_amount
+FROM bookings
+JOIN users ON bookings.user_id = users.id
+JOIN properties ON bookings.property_id = properties.id
+JOIN payments ON bookings.payment_id = payments.id
+WHERE bookings.start_date >= '2024-01-01'
+  AND bookings.end_date <= '2024-12-31'
+  AND payments.status = 'completed';
