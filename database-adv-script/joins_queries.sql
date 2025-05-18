@@ -12,6 +12,7 @@ SELECT
   u.email
 FROM bookings b
 INNER JOIN users u ON b.user_id = u.user_id;
+ORDER BY b.booking_id;
 
 -- 2. LEFT JOIN: Retrieve all properties with their reviews (if any)
 SELECT
@@ -22,6 +23,7 @@ SELECT
   r.comment
 FROM properties p
 LEFT JOIN reviews r ON p.property_id = r.property_id;
+ORDER BY p.property_id;
 
 -- 3. FULL OUTER JOIN: Retrieve all users and all bookings
 -- PostgreSQL version
@@ -33,10 +35,29 @@ SELECT
   b.end_date
 FROM users u
 FULL OUTER JOIN bookings b ON u.user_id = b.user_id;
+ORDER BY u.user_id;
 
 -- MySQL workaround using UNION
--- SELECT u.user_id, u.first_name, b.booking_id, b.start_date, b.end_date
--- FROM users u LEFT JOIN bookings b ON u.user_id = b.user_id
--- UNION
--- SELECT u.user_id, u.first_name, b.booking_id, b.start_date, b.end_date
--- FROM bookings b LEFT JOIN users u ON b.user_id = u.user_id;
+SELECT user_id, first_name, booking_id, start_date, end_date
+FROM (
+  SELECT
+    u.user_id,
+    u.first_name,
+    b.booking_id,
+    b.start_date,
+    b.end_date
+  FROM users u
+  LEFT JOIN bookings b
+    ON u.user_id = b.user_id
+  UNION
+  SELECT
+    u.user_id,
+    u.first_name,
+    b.booking_id,
+    b.start_date,
+    b.end_date
+  FROM bookings b
+  LEFT JOIN users u
+    ON b.user_id = u.user_id
+) AS full_join
+ORDER BY user_id;
